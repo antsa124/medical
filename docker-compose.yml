@@ -1,0 +1,36 @@
+# create your docker-file in the same order as your build tool file (here pom.xml)
+
+version: '3.8' # specifies the docker compose file format version
+
+services: # defines services (container) that Docker manages
+  postgres: # defines your postgreSQL database container
+    image: postgres:15 # tells Docker to use the PostgreSQL 15 from Docker Hub
+    container_name: postgres-db # customize your container name. If not already made, docker will
+      # create the name for you
+    restart: always # ensures the container restarts after it crashes all the time
+    env_file:
+      - .env  # ✅ Local development will use this file
+    environment:
+      POSTGRES_DB: medicalapp_db # your user database information
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432" # maps postgreSQL container port 5432 to your machine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # persist database data
+  backend:
+    build: .
+    container_name: medicalapp-backend
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USER: ${PGUSER}
+      DATABASE_PASSWORD: ${PGPASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data: # volume for persistent database storage
+
