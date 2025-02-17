@@ -5,6 +5,7 @@ import com.antsasdomain.medicalapp.model.PrescriptionStatus;
 import com.antsasdomain.medicalapp.model.PrescriptionType;
 import com.antsasdomain.medicalapp.validation.PrescriptionStatusDeserializer;
 import com.antsasdomain.medicalapp.validation.PrescriptionTypeDeserializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PrescriptionForDoctorDTO {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate prescriptionDate;
     @JsonDeserialize(using = PrescriptionTypeDeserializer.class)
     private PrescriptionType prescriptionType;

@@ -214,7 +214,15 @@ public class DoctorService {
             doctorEntity.setUsername(doctorDTO.getUsername());
         }
         if (doctorDTO.getPassword() != null) {
-            doctorEntity.setPassword(doctorDTO.getPassword());
+            if (PasswordValidator.isValid(doctorDTO.getPassword())) {
+                doctorEntity.setPassword(doctorDTO.getPassword());
+            } else {
+                return new ResponseEntity<>
+                        (Map.of("error", "Password is invalid. Shoud be at least 8 characters " +
+                                "long, should contain at least 1 number, 1 upper-case letter and " +
+                                "1 special character."),
+                                HttpStatus.BAD_REQUEST);
+            }
         }
         if (doctorDTO.getFirstName() != null) {
             doctorEntity.setFirstName(doctorDTO.getFirstName());
