@@ -203,7 +203,7 @@ public class DoctorService {
 
         if (doctorOpt.isEmpty()) {
             return new ResponseEntity<>
-                    (Map.of("error", "No such doctor registered in the database"),
+                    (Map.of("error", "Doctor is not registered in the database"),
                             HttpStatus.NOT_FOUND);
         }
 
@@ -231,6 +231,14 @@ public class DoctorService {
             doctorEntity.setLastName(doctorDTO.getLastName());
         }
         if (doctorDTO.getEmail() != null) {
+            Optional<Doctor> byEmail = doctorRepository.findByEmail(doctorDTO.getEmail());
+            if (byEmail.isPresent()) {
+                return new ResponseEntity<>(
+                        Map.of("error", "The e-mail already exists for a doctor. please " +
+                                "use another one"),
+                        HttpStatus.BAD_REQUEST
+                );
+            }
             doctorEntity.setEmail(doctorDTO.getEmail());
         }
         if (doctorDTO.getPhone() != null && !doctorDTO.getPhone().isEmpty()) {
